@@ -48,8 +48,10 @@ module.exports = function(router) {
             }
 
             user.save(function(err) {
-                if (err)
-                    res.json({"message": "An error occurs while attempting to add a user", "data":err.errmsg});
+                if (err) {
+                    res.status(201);
+                    res.json({"message": "An error occurs while attempting to add a user", "data": err.errmsg});
+                }
                 else
                     res.json({"message": "OK", "data": user});
             });
@@ -152,8 +154,11 @@ module.exports = function(router) {
             if(req.body.description) task.description = req.body.description;
 
             task.save(function (err) {
-                if (err)
-                    res.json({"message": "An error occurs while attempting to get tasklist", "data":err});
+                if (err) {
+                    res.status(201);
+                    res.json({"message": "An error occurs while attempting to get tasklist", "data": err});
+                }
+
                 else
                     res.json({"message": "OK", "data": task});
 
