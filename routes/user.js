@@ -83,9 +83,7 @@ module.exports = function(router) {
                     return;
 
                 }
-                console.log(req);
-                return;
-                user.name = req.query.name;
+                user.name = req.params.newUser.name;
 
                 // save the bear
                 user.save(function(err) {
@@ -147,7 +145,6 @@ module.exports = function(router) {
             if(req.query.assignedUser) task.assignedUser = req.query.assignedUser;
             if(req.query.completed) task.completed = eval("(" + req.query.completed + ")");
             if(req.query.description) task.description = req.query.description;
-            console.log(req.query);
 
             task.save(function (err) {
                 if (err)
@@ -183,7 +180,7 @@ module.exports = function(router) {
                     res.json({"message": "An error occurs while attempting to find task " + req.params.id, "data": err});
                     return;
                 }
-                task.name = req.query.name;
+                task.name = req.params.newTask.name;
 
                 // save the bear
                 task.save(function(err) {
