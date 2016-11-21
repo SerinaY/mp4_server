@@ -139,7 +139,7 @@ module.exports = function(router) {
                     });
             });*/
             User.find({_id: req.params.id}).remove().exec(function(err, user) {
-                if (err) {
+                if (err ||user == null) {
                     res.status(404);
                     res.json({
                         "message": "An error occurs while attempting to delete user " + req.params.id,
@@ -263,7 +263,7 @@ module.exports = function(router) {
         .delete(function(req, res) {
 
             Task.remove({_id: req.params.id}, function(err, task) {
-                if (err) {res.send("GET,POST,OPTIONS,PUT,DELETE");
+                if (err || task == null) {res.send("GET,POST,OPTIONS,PUT,DELETE");
                     res.status(404);
                     res.json({
                         "message": "An error occurs while attempting to delete task " + req.params.id,
