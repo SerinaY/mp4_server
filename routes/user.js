@@ -43,14 +43,13 @@ module.exports = function(router) {
                 user.email =req.body.email ;
             }
             else{
-                res.status(500);
+                res.status(404);
                 res.json({"message": "Name and email fields are required", "data": null});
                 return;
             }
 
             user.save(function(err) {
                 if (err) {
-                    res.status(500);
                     res.json({"message": "An error occurs while attempting to add a user", "data": err.errmsg});
                 }
                 else {
@@ -110,10 +109,10 @@ module.exports = function(router) {
         })
         .delete(function(req, res) {
 
-            Task.findById(req.params.id, function(err, user) {
+            User.findById(req.params.id, function(err, user) {
                 if (err) {
                     res.status(404);
-                    res.json({"message": "Task not found" + req.params.id, "data": null});
+                    res.json({"message": "User not found" + req.params.id, "data": null});
                 }else
                     res.json({"message": "OK", "data": user});
             });
@@ -219,10 +218,8 @@ module.exports = function(router) {
                             "message": "An error occurs while attempting to update task " + req.params.id,
                             "data": err
                         });
-                    }else {
-                        res.status(201);
+                    }else
                         res.json({"message": "OK", "data": task});
-                    }
                 });
             });
 
@@ -230,16 +227,14 @@ module.exports = function(router) {
         .delete(function(req, res) {
 
             Task.remove({_id: req.params.id}, function(err, task) {
-                if (err) {
+                if (err) {res.send("GET,POST,OPTIONS,PUT,DELETE");
                     res.status(404);
                     res.json({
                         "message": "An error occurs while attempting to delete task " + req.params.id,
                         "data": err
                     });
-                }else {
-                    res.status(201);
-                    res.json({"message": "OK", "data": "task " + req.params.id + " deleted"});
-                }
+                }else
+                    res.json({"message": "OK", "data": "task " +req.params.id + " deleted"});
             });
 
         });
