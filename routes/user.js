@@ -37,9 +37,10 @@ module.exports = function(router) {
         //add a user
         .post(function(req, res) {
             var user = new User();
-            if(req.query.name && req.query.email){
-                user.name=req.query.name;
-                user.email =req.query.email ;
+            console.log(req.body);
+            if(req.body.name && req.body.email){
+                user.name=req.body.name;
+                user.email =req.body.email ;
             }
             else{
                 res.json({"message": "Name and email fields are required", "data": null});
@@ -83,7 +84,10 @@ module.exports = function(router) {
                     return;
 
                 }
-                user.name = req.params.newUser.name;
+                if(req.body.name && req.body.email){
+                    user.name=req.body.name;
+                    user.email =req.body.email ;
+                }
 
                 // save the bear
                 user.save(function(err) {
@@ -137,14 +141,15 @@ module.exports = function(router) {
         //add a task
         .post(function (req,res) {
             var task = new Task();
-            if(req.query.name && req.query.deadline){
-                task.name=req.query.name;
-                task.deadline =req.query.deadline;
+            if(req.body.name && req.body.deadline){
+                task.name=req.body.name;
+                task.deadline =req.body.deadline;
             }
-            if(req.query.assignedUserName) task.assignedUserName = req.query.assignedUserName;
-            if(req.query.assignedUser) task.assignedUser = req.query.assignedUser;
-            if(req.query.completed) task.completed = eval("(" + req.query.completed + ")");
-            if(req.query.description) task.description = req.query.description;
+
+            if(req.body.assignedUserName) task.assignedUserName = req.body.assignedUserName;
+            if(req.body.assignedUser) task.assignedUser = req.body.assignedUser;
+            if(req.body.completed) task.completed = eval("(" + req.body.completed + ")");
+            if(req.body.description) task.description = req.body.description;
 
             task.save(function (err) {
                 if (err)
@@ -174,13 +179,20 @@ module.exports = function(router) {
             });
         })
         .put(function(req, res) {
-            User.findById(req.params.id, function(err, task) {
+            Task.findById(req.params.id, function(err, task) {
                 if (err) {
                     res.status(404);
                     res.json({"message": "An error occurs while attempting to find task " + req.params.id, "data": err});
                     return;
                 }
-                task.name = req.params.newTask.name;
+                if(req.body.name && req.body.deadline){
+                    task.name=req.body.name;
+                    task.deadline =req.body.deadline;
+                }
+                if(req.body.assignedUserName) task.assignedUserName = req.body.assignedUserName;
+                if(req.body.assignedUser) task.assignedUser = req.body.assignedUser;
+                if(req.body.completed) task.completed = eval("(" + req.body.completed + ")");
+                if(req.body.description) task.description = req.body.description;
 
                 // save the bear
                 task.save(function(err) {
@@ -198,7 +210,7 @@ module.exports = function(router) {
         })
         .delete(function(req, res) {
 
-            User.remove({_id: req.params.id}, function(err, task) {
+            Task.remove({_id: req.params.id}, function(err, task) {
                 if (err) {res.send("GET,POST,OPTIONS,PUT,DELETE");
                     res.status(404);
                     res.json({
