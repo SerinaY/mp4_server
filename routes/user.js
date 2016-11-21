@@ -50,8 +50,10 @@ module.exports = function(router) {
             user.save(function(err) {
                 if (err)
                     res.json({"message": "An error occurs while attempting to add a user", "data":err.errmsg});
-                else
+                else {
+                    res.status(201);
                     res.json({"message": "OK", "data": user});
+                }
             });
         })
         //handling options
@@ -154,8 +156,10 @@ module.exports = function(router) {
             task.save(function (err) {
                 if (err)
                     res.json({"message": "An error occurs while attempting to get tasklist", "data":err});
-                else
+                else {
+                    res.status(201);
                     res.json({"message": "OK", "data": task});
+                }
 
             })
 
