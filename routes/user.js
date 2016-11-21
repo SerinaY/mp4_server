@@ -128,12 +128,16 @@ module.exports = function(router) {
     router.route('/tasks')
 
     //get tasks
+
         .get(function(req,res){
+            var limit = 100;
+            if(req.query.limit)
+                limit = req.query.limit;
             Task.find(eval("(" + req.query.where + ")"))
                 .sort(eval("(" + req.query.sort + ")"))
                 .select(eval("(" + req.query.select + ")"))
                 .skip(eval("(" + req.query.skip + ")"))
-                .limit(eval("(" + req.query.limit + ")"))
+                .limit(eval("(" + limit + ")"))
                 .exec(function(err, tasks) {
                     if(err){
                         res.status(500);
