@@ -76,7 +76,7 @@ module.exports = function(router) {
 
         })
         .put(function(req, res) {
-            User.findById(req.params.id, function(err, user) {
+            /*User.findById(req.params.id, function(err, user) {
                 if (err) {
                     res.status(404);
                     res.json({
@@ -102,8 +102,22 @@ module.exports = function(router) {
                     }else
                         res.json({"message": "OK", "data": user});
                 });
-            });
+            });*/
+            User.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, user) {
+                if (err) {
+                    res.status(404);
+                    res.json({
+                        "message": "An error occurs while attempting to find user " + req.params.id,
+                        "data": err
+                    });
+                    return;
 
+                }else
+                    res.json({"message": "OK", "data": user});
+
+
+
+            });
         })
         .delete(function(req, res) {
 
@@ -190,7 +204,7 @@ module.exports = function(router) {
             });
         })
         .put(function(req, res) {
-            Task.findById(req.params.id, function(err, task) {
+            /*Task.findById(req.params.id, function(err, task) {
                 if (err) {
                     res.status(404);
                     res.json({"message": "An error occurs while attempting to find task " + req.params.id, "data": err});
@@ -216,6 +230,22 @@ module.exports = function(router) {
                     }else
                         res.json({"message": "OK", "data": task});
                 });
+            });*/
+            console.log(req.body);
+            Task.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, task) {
+                if (err) {
+                    res.status(404);
+                    res.json({
+                        "message": "An error occurs while attempting to find task " + req.params.id,
+                        "data": err
+                    });
+                    return;
+
+                }else
+                    res.json({"message": "OK", "data": task});
+
+
+
             });
 
         })
