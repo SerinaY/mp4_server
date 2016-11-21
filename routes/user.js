@@ -23,7 +23,7 @@ module.exports = function(router) {
                 .limit(eval("(" + req.query.limit + ")"))
                 .exec(function(err, users) {
                     if(err){
-                        res.status(404);
+                        res.status(500);
                         res.json({"message": "An error occurs while attempting to get userlist", "data": err});
                     }
                     else{
@@ -48,8 +48,10 @@ module.exports = function(router) {
             }
 
             user.save(function(err) {
-                if (err)
-                    res.json({"message": "An error occurs while attempting to add a user", "data":err.errmsg});
+                if (err) {
+                    res.status(500);
+                    res.json({"message": "An error occurs while attempting to add a user", "data": err.errmsg});
+                }
                 else {
                     res.status(201);
                     res.json({"message": "OK", "data": user});
@@ -66,7 +68,12 @@ module.exports = function(router) {
     router.route('/users/:id')
         .get(function(req, res) {
             User.findById(req.params.id, function(err, user) {
-                if (err || user == null) {
+                if(err){
+                    res.status(500);
+                    res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
+
+                }
+                else if (err || user == null) {
                     res.status(404);
                     res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
                 }else
@@ -77,33 +84,7 @@ module.exports = function(router) {
 
         })
         .put(function(req, res) {
-            /*User.findById(req.params.id, function(err, user) {
-                if (err) {
-                    res.status(404);
-                    res.json({
-                        "message": "An error occurs while attempting to find user " + req.params.id,
-                        "data": err
-                    });
-                    return;
 
-                }
-                if(req.body.name && req.body.email){
-                    user.name=req.body.name;
-                    user.email =req.body.email ;
-                }
-
-                // save the bear
-                user.save(function(err) {
-                    if (err) {
-                        res.status(404);
-                        res.json({
-                            "message": "An error occurs while attempting to update user " + req.params.id,
-                            "data": err
-                        });
-                    }else
-                        res.json({"message": "OK", "data": user});
-                });
-            });*/
             User.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, user) {
                 if (err) {
                     res.status(404);
@@ -122,22 +103,7 @@ module.exports = function(router) {
         })
         .delete(function(req, res) {
 
-            /*User.findById(req.params.id, function(err, user) {
-                if (err) {
-                    res.status(404);
-                    res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
-                }else
-                    User.remove({_id: req.params.id}, function(err, user) {
-                        if (err) {
-                            res.status(404);
-                            res.json({
-                                "message": "An error occurs while attempting to delete user " + req.params.id,
-                                "data": err
-                            });
-                        }else
-                            res.json({"message": "OK", "data": "user " +req.params.id + " deleted"});
-                    });
-            });*/
+
             User.findById(req.params.id, function(err, user) {
                 if (err || user == null) {
                     res.status(404);
@@ -170,7 +136,7 @@ module.exports = function(router) {
                 .limit(eval("(" + req.query.limit + ")"))
                 .exec(function(err, tasks) {
                     if(err){
-                        res.status(404);
+                        res.status(500);
                         res.json({"message": "An error occurs while attempting to get userlist", "data": err});
                     }
                     else{
@@ -212,7 +178,14 @@ module.exports = function(router) {
     router.route('/tasks/:id')
         .get(function(req, res) {
             Task.findById(req.params.id, function(err, task) {
-                if (err || task == null) {
+                if(err){
+                    res.status(500);
+                    res.json({
+                        "message": "An error occurs while attempting to find task " + req.params.id,
+                        "data": err
+                    });
+                }
+                else if (task == null) {
                     res.status(404);
                     res.json({
                         "message": "An error occurs while attempting to find task " + req.params.id,
@@ -223,33 +196,7 @@ module.exports = function(router) {
             });
         })
         .put(function(req, res) {
-            /*Task.findById(req.params.id, function(err, task) {
-                if (err) {
-                    res.status(404);
-                    res.json({"message": "An error occurs while attempting to find task " + req.params.id, "data": err});
-                    return;
-                }
-                if(req.body.name && req.body.deadline){
-                    task.name=req.body.name;
-                    task.deadline =req.body.deadline;
-                }
-                if(req.body.assignedUserName) task.assignedUserName = req.body.assignedUserName;
-                if(req.body.assignedUser) task.assignedUser = req.body.assignedUser;
-                if(req.body.completed) task.completed = eval("(" + req.body.completed + ")");
-                if(req.body.description) task.description = req.body.description;
 
-                // save the bear
-                task.save(function(err) {
-                    if (err) {
-                        res.status(404);
-                        res.json({
-                            "message": "An error occurs while attempting to update task " + req.params.id,
-                            "data": err
-                        });
-                    }else
-                        res.json({"message": "OK", "data": task});
-                });
-            });*/
             console.log(req.body);
             Task.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, task) {
                 if (err) {
@@ -279,7 +226,14 @@ module.exports = function(router) {
                     });
                 }else
                     Task.remove({_id: req.params.id}, function(err, task) {
-                        if (err || task == null) {res.send("GET,POST,OPTIONS,PUT,DELETE");
+                        if (err) {res.send("GET,POST,OPTIONS,PUT,DELETE");
+                            res.status(500);
+                            res.json({
+                                "message": "An error occurs while attempting to delete task " + req.params.id,
+                                "data": err
+                            });
+                        }
+                        else if (task == null) {res.send("GET,POST,OPTIONS,PUT,DELETE");
                             res.status(404);
                             res.json({
                                 "message": "An error occurs while attempting to delete task " + req.params.id,
