@@ -174,7 +174,7 @@ module.exports = function(router) {
             });
         })
         .put(function(req, res) {
-            Task.findById(req.params.id, function(err, task) {
+            User.findById(req.params.id, function(err, task) {
                 if (err) {
                     res.status(404);
                     res.json({"message": "An error occurs while attempting to find task " + req.params.id, "data": err});
@@ -198,8 +198,8 @@ module.exports = function(router) {
         })
         .delete(function(req, res) {
 
-            Task.remove({_id: req.params.id}, function(err, task) {
-                if (err) {
+            User.remove({_id: req.params.id}, function(err, task) {
+                if (err) {res.send("GET,POST,OPTIONS,PUT,DELETE");
                     res.status(404);
                     res.json({
                         "message": "An error occurs while attempting to delete task " + req.params.id,
@@ -213,4 +213,3 @@ module.exports = function(router) {
 
     return router;
 }
-
