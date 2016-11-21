@@ -138,16 +138,24 @@ module.exports = function(router) {
                             res.json({"message": "OK", "data": "user " +req.params.id + " deleted"});
                     });
             });*/
-            User.find({_id: req.params.id}).remove().exec(function(err, user) {
-                if (err ||user == null) {
+            User.findById(req.params.id, function(err, user) {
+                if (err || user == null) {
                     res.status(404);
-                    res.json({
-                        "message": "An error occurs while attempting to delete user " + req.params.id,
-                        "data": err
-                    });
+                    res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
                 }else
-                    res.json({"message": "OK", "data": "user " +req.params.id + " deleted"});
+                    User.find({_id: req.params.id}).remove().exec(function(err, user) {
+                        if (err ||user == null) {
+                            res.status(404);
+                            res.json({
+                                "message": "An error occurs while attempting to delete user " + req.params.id,
+                                "data": err
+                            });
+                        }else
+                            res.json({"message": "OK", "data": "user " +req.params.id + " deleted"});
+                    });
+
             });
+
 
 
         });
