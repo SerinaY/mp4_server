@@ -14,45 +14,45 @@ module.exports = function(router) {
         res.end();
     })
     router.route('/users')
-      .get(function(req, res) {
-          //where
-          User.find(eval("(" + req.query.where + ")"))
-              .sort(eval("(" + req.query.sort + ")"))
-              .select(eval("(" + req.query.select + ")"))
-              .skip(eval("(" + req.query.skip + ")"))
-              .limit(eval("(" + req.query.limit + ")"))
-              .exec(function(err, users) {
-                  if(err){
-                      res.status(404);
-                      res.json({"message": "An error occurs while attempting to get userlist", "data": err});
-                  }
-                  else{
-                      if(eval("(" + req.query.count + ")"))
-                          users = users.length;
-                      res.json({"message": "OK", "data":users});
-                  }
-              });
+        .get(function(req, res) {
+            //where
+            User.find(eval("(" + req.query.where + ")"))
+                .sort(eval("(" + req.query.sort + ")"))
+                .select(eval("(" + req.query.select + ")"))
+                .skip(eval("(" + req.query.skip + ")"))
+                .limit(eval("(" + req.query.limit + ")"))
+                .exec(function(err, users) {
+                    if(err){
+                        res.status(404);
+                        res.json({"message": "An error occurs while attempting to get userlist", "data": err});
+                    }
+                    else{
+                        if(eval("(" + req.query.count + ")"))
+                            users = users.length;
+                        res.json({"message": "OK", "data":users});
+                    }
+                });
 
-      })
-      //add a user
-      .post(function(req, res) {
-          var user = new User();
-          if(req.query.name && req.query.email){
-              user.name=req.query.name;
-              user.email =req.query.email ;
-          }
-          else{
-              res.json({"message": "Name and email fields are required", "data": null});
-              return;
-          }
+        })
+        //add a user
+        .post(function(req, res) {
+            var user = new User();
+            if(req.query.name && req.query.email){
+                user.name=req.query.name;
+                user.email =req.query.email ;
+            }
+            else{
+                res.json({"message": "Name and email fields are required", "data": null});
+                return;
+            }
 
-          user.save(function(err) {
-              if (err)
-                  res.json({"message": "An error occurs while attempting to add a user", "data":err.errmsg});
-              else
-                  res.json({"message": "OK", "data": user});
-        });
-      })
+            user.save(function(err) {
+                if (err)
+                    res.json({"message": "An error occurs while attempting to add a user", "data":err.errmsg});
+                else
+                    res.json({"message": "OK", "data": user});
+            });
+        })
         //handling options
         .options(function(req, res){
             res.writeHead(200);
@@ -61,17 +61,17 @@ module.exports = function(router) {
 
     // get a user
     router.route('/users/:id')
-      .get(function(req, res) {
-        User.findById(req.params.id, function(err, user) {
-            if (err) {
-                res.status(404);
-                res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
-            }else
-                res.json({"message": "OK", "data": user});
-        });
+        .get(function(req, res) {
+            User.findById(req.params.id, function(err, user) {
+                if (err) {
+                    res.status(404);
+                    res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
+                }else
+                    res.json({"message": "OK", "data": user});
+            });
 
 
-      })
+        })
         .put(function(req, res) {
             User.findById(req.params.id, function(err, user) {
                 if (err) {
@@ -211,7 +211,5 @@ module.exports = function(router) {
 
         });
 
-  return router;
+    return router;
 }
-
-
