@@ -107,16 +107,23 @@ module.exports = function(router) {
         })
         .delete(function(req, res) {
 
-            User.remove({_id: req.params.id}, function(err, user) {
+            User.findById(req.params.id, function(err, user) {
                 if (err) {
                     res.status(404);
-                    res.json({
-                        "message": "An error occurs while attempting to delete user " + req.params.id,
-                        "data": err
-                    });
+                    res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
                 }else
-                    res.json({"message": "OK", "data": "user " +req.params.id + " deleted"});
+                    User.remove({_id: req.params.id}, function(err, user) {
+                        if (err) {
+                            res.status(404);
+                            res.json({
+                                "message": "An error occurs while attempting to delete user " + req.params.id,
+                                "data": err
+                            });
+                        }else
+                            res.json({"message": "OK", "data": "user " +req.params.id + " deleted"});
+                    });
             });
+
 
         });
     router.route('/tasks')
