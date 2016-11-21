@@ -270,16 +270,26 @@ module.exports = function(router) {
         })
         .delete(function(req, res) {
 
-            Task.remove({_id: req.params.id}, function(err, task) {
-                if (err || task == null) {res.send("GET,POST,OPTIONS,PUT,DELETE");
+            Task.findById(req.params.id, function(err, task) {
+                if (err || task == null) {
                     res.status(404);
                     res.json({
-                        "message": "An error occurs while attempting to delete task " + req.params.id,
+                        "message": "An error occurs while attempting to find task " + req.params.id,
                         "data": err
                     });
                 }else
-                    res.json({"message": "OK", "data": "task " +req.params.id + " deleted"});
+                    Task.remove({_id: req.params.id}, function(err, task) {
+                        if (err || task == null) {res.send("GET,POST,OPTIONS,PUT,DELETE");
+                            res.status(404);
+                            res.json({
+                                "message": "An error occurs while attempting to delete task " + req.params.id,
+                                "data": err
+                            });
+                        }else
+                            res.json({"message": "OK", "data": "task " +req.params.id + " deleted"});
+                    });
             });
+
 
         });
 
