@@ -66,11 +66,12 @@ module.exports = function(router) {
     router.route('/users/:id')
         .get(function(req, res) {
             User.findById(req.params.id, function(err, user) {
-                if (err) {
+                if (err || user == null) {
                     res.status(404);
                     res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
                 }else
                     res.json({"message": "OK", "data": user});
+
             });
 
 
@@ -121,7 +122,7 @@ module.exports = function(router) {
         })
         .delete(function(req, res) {
 
-            User.findById(req.params.id, function(err, user) {
+            /*User.findById(req.params.id, function(err, user) {
                 if (err) {
                     res.status(404);
                     res.json({"message": "An error occurs while attempting to find user " + req.params.id, "data": err});
@@ -136,6 +137,16 @@ module.exports = function(router) {
                         }else
                             res.json({"message": "OK", "data": "user " +req.params.id + " deleted"});
                     });
+            });*/
+            User.find({_id: req.params.id}).remove().exec(function(err, user) {
+                if (err) {
+                    res.status(404);
+                    res.json({
+                        "message": "An error occurs while attempting to delete user " + req.params.id,
+                        "data": err
+                    });
+                }else
+                    res.json({"message": "OK", "data": "user " +req.params.id + " deleted"});
             });
 
 
@@ -193,7 +204,7 @@ module.exports = function(router) {
     router.route('/tasks/:id')
         .get(function(req, res) {
             Task.findById(req.params.id, function(err, task) {
-                if (err) {
+                if (err || task == null) {
                     res.status(404);
                     res.json({
                         "message": "An error occurs while attempting to find task " + req.params.id,
