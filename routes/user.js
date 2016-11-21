@@ -43,17 +43,20 @@ module.exports = function(router) {
                 user.email =req.body.email ;
             }
             else{
+                res.status(500);
                 res.json({"message": "Name and email fields are required", "data": null});
                 return;
             }
 
             user.save(function(err) {
                 if (err) {
-                    res.status(201);
+                    res.status(500);
                     res.json({"message": "An error occurs while attempting to add a user", "data": err.errmsg});
                 }
-                else
+                else {
+                    res.status(201);
                     res.json({"message": "OK", "data": user});
+                }
             });
         })
         //handling options
@@ -107,6 +110,13 @@ module.exports = function(router) {
         })
         .delete(function(req, res) {
 
+            Task.findById(req.params.id, function(err, user) {
+                if (err) {
+                    res.status(404);
+                    res.json({"message": "Task not found" + req.params.id, "data": null});
+                }else
+                    res.json({"message": "OK", "data": user});
+            });
             User.remove({_id: req.params.id}, function(err, user) {
                 if (err) {
                     res.status(404);
@@ -155,12 +165,14 @@ module.exports = function(router) {
 
             task.save(function (err) {
                 if (err) {
-                    res.status(201);
+
                     res.json({"message": "An error occurs while attempting to get tasklist", "data": err});
                 }
 
-                else
+                else {
+                    res.status(201);
                     res.json({"message": "OK", "data": task});
+                }
 
             })
 
@@ -207,8 +219,10 @@ module.exports = function(router) {
                             "message": "An error occurs while attempting to update task " + req.params.id,
                             "data": err
                         });
-                    }else
+                    }else {
+                        res.status(201);
                         res.json({"message": "OK", "data": task});
+                    }
                 });
             });
 
@@ -216,14 +230,16 @@ module.exports = function(router) {
         .delete(function(req, res) {
 
             Task.remove({_id: req.params.id}, function(err, task) {
-                if (err) {res.send("GET,POST,OPTIONS,PUT,DELETE");
+                if (err) {
                     res.status(404);
                     res.json({
                         "message": "An error occurs while attempting to delete task " + req.params.id,
                         "data": err
                     });
-                }else
-                    res.json({"message": "OK", "data": "task " +req.params.id + " deleted"});
+                }else {
+                    res.status(201);
+                    res.json({"message": "OK", "data": "task " + req.params.id + " deleted"});
+                }
             });
 
         });
