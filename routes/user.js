@@ -85,6 +85,7 @@ module.exports = function(router) {
         })
         .put(function(req, res) {
 
+
             User.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, user) {
                 if (err) {
                     res.status(404);
